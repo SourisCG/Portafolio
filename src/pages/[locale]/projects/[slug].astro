@@ -1,0 +1,160 @@
+---
+import Base from "../../../layouts/Base.astro";
+import { translations, type Locale } from "../../../i18n";
+import { projects } from "../../../data/projects";
+
+export function getStaticPaths() {
+  const paths: Array<{ params: { locale: string; slug: string } }> = [];
+  for (const locale of ["en", "es"] as const) {
+    for (const project of projects) {
+      paths.push({ params: { locale, slug: project.slug } });
+    }
+  }
+  return paths;
+}
+
+const { locale, slug } = Astro.params as { locale: Locale; slug: string };
+const project = projects.find((p) => p.slug === slug);
+if (!project) {
+  return Astro.redirect(`/${locale}/projects/`);
+}
+const t = translations[locale];
+const data = project.i18n[locale];
+const statusLabel = t.projects.status[project.status];
+const releaseUrl = project.links.find((l) => l.label === "release")?.url;
+const demoUrl = project.links.find((l) => l.label === "demo")?.url;
+---
+
+<Base
+  locale={locale}
+  title={`${project.name} — ${t.site.title}`}
+  description={data.tagline}
+  pathname={Astro.url.pathname}
+>
+  <article class="project-detail">
+    <a class="back-link" href={`/${locale}/projects/`}>← {t.nav.back}</a>
+
+    <header class="detail-header pixel-card">
+      <div class="detail-title-row">
+        <h1>{project.name}</h1>
+        <span class:list={["status-badge", `status-${project.status}`]}>{statusLabel}</span>
+      </div>
+      <p class="detail-tagline">{data.tagline}</p>
+      <div class="detail-tags">
+        {project.tags.map((tag) => (
+          <span class:list={["tag", tag]}>{tag}</span>
+        ))}
+        {project.language.map((lang) => (
+          <span class="tag" data-lang>{lang}</span>
+        ))}
+      </div>
+    </header>
+
+    <section class="detail-section">
+      <h2>{t.projects.detail.problem}</h2>
+      <p>{data.problem}</p>
+    </section>
+
+    <section class="detail-section">
+      <h2>{t.projects.detail.approach}</h2>
+      <p>{data.approach}</p>
+    </section>
+
+    <section class="detail-section">
+      <h2>{t.projects.detail.stack}</h2>
+      <ul>
+        {project.language.map((lang) => (
+          <li>{lang}</li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="detail-section">
+      <h2>{t.projects.detail.links}</h2>
+      <div class="detail-links">
+        <a class="btn" href={project.repo} rel="noopener" target="_blank">
+          {t.projects.view_repo}
+        </a>
+        {releaseUrl && (
+          <a class="btn btn-secondary" href={releaseUrl} rel="noopener" target="_blank">
+            {t.projects.view_release}
+          </a>
+        )}
+        {demoUrl && (
+          <a class="btn btn-secondary" href={demoUrl} rel="noopener" target="_blank">
+            {t.projects.view_demo}
+          </a>
+        )}
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .project-detail {
+    margin-top: 12px;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    text-decoration: none;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    background-color: var(--ink);
+    color: var(--bg);
+  }
+
+  .detail-header {
+    margin-bottom: 24px;
+  }
+
+  .detail-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .detail-title-row h1 {
+    margin: 0;
+  }
+
+  .detail-tagline {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .detail-tags {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .detail-tags .tag[data-lang] {
+    background-color: var(--bg-paper);
+    color: var(--ink-soft);
+  }
+
+  .detail-section {
+    margin-bottom: 24px;
+  }
+
+  .detail-section p {
+    color: var(--ink-soft);
+  }
+
+  .detail-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+</style>

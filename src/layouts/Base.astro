@@ -1,0 +1,43 @@
+---
+import { translations, type Locale, type Translation } from "../i18n";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+
+export interface Props {
+  locale: Locale;
+  title: string;
+  description?: string;
+  pathname?: string;
+}
+
+const { locale, title, description, pathname } = Astro.props as Props;
+const t: Translation = translations[locale];
+const siteDescription = description ?? t.site.description;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={siteDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={siteDescription} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={siteDescription} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <Header locale={locale} t={t} pathname={pathname ?? Astro.url.pathname} />
+    <main>
+      <slot />
+    </main>
+    <Footer locale={locale} t={t} />
+  </body>
+</html>

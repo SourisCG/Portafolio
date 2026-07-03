@@ -1,0 +1,99 @@
+---
+import Base from "../../layouts/Base.astro";
+import { translations, type Locale } from "../../i18n";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "en" } },
+    { params: { locale: "es" } },
+  ];
+}
+
+const { locale } = Astro.params as { locale: Locale };
+const t = translations[locale];
+
+const socials = [
+  { label: "GitHub", handle: "@SourisCG", url: "https://github.com/SourisCG", color: "java" },
+  { label: "Twitter / X", handle: "@SourisCG", url: "https://twitter.com/SourisCG", color: "typescript" },
+  { label: "LinkedIn", handle: "in/souriscg", url: "https://www.linkedin.com/in/souriscg", color: "javafx" },
+];
+---
+
+<Base
+  locale={locale}
+  title={`${t.nav.links} — ${t.site.title}`}
+  pathname={Astro.url.pathname}
+>
+  <section class="links">
+    <h1>{t.links.title}</h1>
+    <p>{t.links.intro}</p>
+
+    <h2>{t.links.find_me}</h2>
+    <ul class="socials">
+      {socials.map((s) => (
+        <li>
+          <a href={s.url} rel="noopener" target="_blank">
+            <span class:list={["social-label", s.color]}>{s.label}</span>
+            <span class="social-handle">{s.handle}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .links {
+    margin-top: 12px;
+  }
+
+  .links p {
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+
+  .socials {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .socials a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border: var(--border-w) solid var(--border);
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--shadow);
+    padding: 12px 16px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: transform 0.08s ease;
+  }
+
+  .socials a:hover,
+  .socials a:focus-visible {
+    transform: translate(-2px, -2px);
+    box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 var(--shadow);
+    background-color: var(--ink);
+    color: var(--bg);
+  }
+
+  .social-label {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    display: inline-block;
+    padding: 2px 6px;
+    border: var(--border-w) solid var(--border);
+    width: fit-content;
+    color: var(--ink);
+  }
+
+  .social-handle {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+</style>

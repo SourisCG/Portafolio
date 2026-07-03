@@ -1,0 +1,30 @@
+---
+import { defaultLocale } from "../i18n";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SourisCG</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta http-equiv="refresh" content={`0; url=/${defaultLocale}/`} />
+    <style>
+      body {
+        font-family: ui-monospace, monospace;
+        background: #f5ecd7;
+        color: #1f1b16;
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+      }
+      a {
+        color: #3a6b8a;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Redirecting to <a href={`/${defaultLocale}/`}>/{defaultLocale}/</a>…</p>
+  </body>
+</html>

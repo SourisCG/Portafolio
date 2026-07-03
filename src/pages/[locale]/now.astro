@@ -1,0 +1,81 @@
+---
+import Base from "../../layouts/Base.astro";
+import { translations, type Locale } from "../../i18n";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "en" } },
+    { params: { locale: "es" } },
+  ];
+}
+
+const { locale } = Astro.params as { locale: Locale };
+const t = translations[locale];
+---
+
+<Base
+  locale={locale}
+  title={`${t.nav.now} — ${t.site.title}`}
+  pathname={Astro.url.pathname}
+>
+  <section class="now">
+    <h1>{t.now.title}</h1>
+    <p>{t.now.intro}</p>
+
+    <ol class="timeline">
+      {t.now.items.map((entry) => (
+        <li class="timeline-item">
+          <span class="timeline-date">{entry.date}</span>
+          <p class="timeline-text">{entry.text}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+</Base>
+
+<style>
+  .now {
+    margin-top: 12px;
+  }
+
+  .now p {
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+
+  .timeline {
+    list-style: none;
+    padding: 0;
+    border-left: var(--border-w) dashed var(--border);
+    margin-left: 8px;
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0 0 18px 24px;
+  }
+
+  .timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -8px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    background-color: var(--accent);
+    border: var(--border-w) solid var(--border);
+  }
+
+  .timeline-date {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .timeline-text {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+</style>

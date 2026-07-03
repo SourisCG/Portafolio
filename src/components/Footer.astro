@@ -1,0 +1,46 @@
+---
+import { type Locale, type Translation } from "../i18n";
+
+export interface Props {
+  locale: Locale;
+  t: Translation;
+}
+
+const { t } = Astro.props as Props;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="made-with">{t.footer.made_with}</p>
+    <p class="rights">© {year} {t.footer.rights}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: var(--border-w) solid var(--border);
+    background-color: var(--bg-paper);
+    margin-top: 32px;
+  }
+
+  .container {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .made-with {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .rights {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: 0;
+  }
+</style>

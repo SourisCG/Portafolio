@@ -1,0 +1,105 @@
+---
+import Base from "../../layouts/Base.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { translations, type Locale } from "../../i18n";
+import { projects } from "../../data/projects";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "en" } },
+    { params: { locale: "es" } },
+  ];
+}
+
+const { locale } = Astro.params as { locale: Locale };
+const t = translations[locale];
+
+const allTags = Array.from(new Set(projects.flatMap((p) => p.tags))).sort();
+---
+
+<Base
+  locale={locale}
+  title={`${t.nav.projects} — ${t.site.title}`}
+  pathname={Astro.url.pathname}
+>
+  <section class="projects-intro">
+    <h1>{t.projects.title}</h1>
+    <p>{t.projects.intro}</p>
+  </section>
+
+  <section class="filters pixel-card" aria-label="Project filters">
+    <span class="filters-label">{t.projects.filter_all}:</span>
+    <a class="filter is-active" href={`/${locale}/projects/`} data-filter="all">
+      {t.projects.filter_all}
+    </a>
+    {allTags.map((tag) => (
+      <a class="filter" href={`#${tag}`} data-filter={tag}>
+        {tag}
+      </a>
+    ))}
+  </section>
+
+  <section class="projects-grid">
+    {projects.map((project) => (
+      <div
+        class="grid-item"
+        id={project.tags.join(" ")}
+        data-tags={project.tags.join(",")}
+      >
+        <ProjectCard project={project} locale={locale} t={t} />
+      </div>
+    ))}
+  </section>
+</Base>
+
+<style>
+  .projects-intro {
+    margin-bottom: 16px;
+  }
+
+  .projects-intro p {
+    color: var(--ink-soft);
+    max-width: 60ch;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 12px 16px;
+  }
+
+  .filters-label {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    margin-right: 4px;
+  }
+
+  .filter {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: var(--border-w) solid var(--border);
+    padding: 3px 8px;
+    text-decoration: none;
+    color: var(--ink);
+    background-color: var(--bg-card);
+  }
+
+  .filter:hover,
+  .filter:focus-visible,
+  .filter.is-active {
+    background-color: var(--ink);
+    color: var(--bg);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+</style>

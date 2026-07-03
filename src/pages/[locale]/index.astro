@@ -1,0 +1,153 @@
+---
+import Base from "../../layouts/Base.astro";
+import { translations, type Locale } from "../../i18n";
+import { projects } from "../../data/projects";
+
+export function getStaticPaths() {
+  return [
+    { params: { locale: "en" } },
+    { params: { locale: "es" } },
+  ];
+}
+
+const { locale } = Astro.params as { locale: Locale };
+const t = translations[locale];
+const featured = projects.filter((p) => p.featured);
+---
+
+<Base
+  locale={locale}
+  title={t.site.title}
+  description={t.site.description}
+  pathname={Astro.url.pathname}
+>
+  <section class="hero pixel-card">
+    <div class="hero-meta">
+      <span class="status-badge status-stable">{t.hero.badge}</span>
+    </div>
+    <h1 class="hero-greeting">{t.hero.greeting}</h1>
+    <p class="hero-tagline">{t.site.tagline}</p>
+    <p class="hero-intro">{t.hero.intro}</p>
+    <div class="hero-ctas">
+      <a class="btn" href={`/${locale}/projects/`}>{t.hero.cta_projects}</a>
+      <a class="btn btn-secondary" href={`/${locale}/links/`}>{t.hero.cta_links}</a>
+    </div>
+  </section>
+
+  <section class="featured">
+    <h2>{t.projects.featured}</h2>
+    <div class="featured-grid">
+      {featured.map((project) => (
+        <article class="pixel-card featured-item">
+          <header>
+            <h3>
+              <a href={`/${locale}/projects/${project.slug}/`}>{project.name}</a>
+            </h3>
+            <span class:list={["status-badge", `status-${project.status}`]}>
+              {t.projects.status[project.status]}
+            </span>
+          </header>
+          <p class="featured-tagline">{project.i18n[locale].tagline}</p>
+          <p class="featured-desc">{project.i18n[locale].description}</p>
+          <div class="featured-tags">
+            {project.tags.slice(0, 4).map((tag) => (
+              <span class:list={["tag", tag]}>{tag}</span>
+            ))}
+          </div>
+          <a class="btn btn-secondary" href={`/${locale}/projects/${project.slug}/`}>
+            {t.projects.detail.stack} →
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    margin-top: 12px;
+    padding: 28px 24px;
+  }
+
+  .hero-meta {
+    margin-bottom: 16px;
+  }
+
+  .hero-greeting {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    margin-bottom: 8px;
+  }
+
+  .hero-tagline {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .hero-intro {
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .featured {
+    margin-top: 36px;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  .featured-item header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .featured-item h3 {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .featured-item h3 a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .featured-item h3 a:hover,
+  .featured-item h3 a:focus-visible {
+    background-color: var(--ink);
+    color: var(--bg);
+  }
+
+  .featured-tagline {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+
+  .featured-desc {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+
+  .featured-tags {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+</style>
