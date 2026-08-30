@@ -1,6 +1,6 @@
 # SourisCG — Portfolio
 
-Personal portfolio for Sebastian Garcia (SourisCG), a software engineering student who builds Java/JavaFX desktop tools, developer utilities and small experiments with a retro web soul.
+Personal portfolio for Sebastian Garcia (SourisCG), a software engineering student who builds Java/JavaFX desktop tools, developer utilities.
 
 ## Stack
 
